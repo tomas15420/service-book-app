@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html lang="cs">
-<head>
+<head th:replace="layout :: head">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title id="pageTitle">Přihlášení</title>
 </head>
-<body>
-    <form th:action="@{/login}" method="post">
-        <input type="text" name="username" placeholder="Uživatelské jméno"/>
-        <input type="password" name="password" placeholder="Heslo"/>
-        <input type="submit" value="Přihlásit se">
-    </form>
+<body class="vh-100">
+<div class="d-flex align-items-center justify-content-center h-100">
+    <div class="border border-2 p-5 flex-column" style="min-width: 35%">
+        <div class="btn-group btn-group-lg mb-4 w-100" role="group">
+            <a href="#" class="btn btn-primary">Přihlášení</a>
+            <a th:href="@{/register}" class="btn btn-outline-primary">Registrace</a>
+        </div>
+        <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            Chybně zadané přihlašovací údaje
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Uživatelské jméno / E-Mail</label>
+                <input id="username" class="form-control" type="text" name="username" required/>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Heslo</label>
+                <input id="password" class="form-control" type="password" name="password" required/>
+            </div>
+            <input type="submit" class="btn btn-primary w-100" value="Přihlásit se">
+        </form>
+    </div>
+</div>
 </body>
 </html>

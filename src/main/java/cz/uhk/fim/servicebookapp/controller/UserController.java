@@ -31,12 +31,15 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("user") UserRegisterDto userDto, BindingResult bindingResult){
+        if(userService.getUserByUsername(userDto.getUsername()).isPresent()){
+            bindingResult.rejectValue("username",null,"Účet s tímto uživatelským jménem již existuje");
+        }
 
         if(userService.getUserByEmail(userDto.getEmail()).isPresent()){
             bindingResult.rejectValue("email",null,"Účet s tímto E-mailem již existuje");
         }
 
-        if(userDto.getPassword() != null && !userDto.getPassword2().equals(userDto.getPassword())){
+        if(userDto.getPassword() != null && !userDto.getPassword().isEmpty() && !userDto.getPassword().equals(userDto.getPassword2())){
             bindingResult.rejectValue("password2", null, "Hesla se neshodují");
         }
 
