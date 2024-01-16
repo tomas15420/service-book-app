@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -28,19 +29,18 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/", "/login", "/register").permitAll();
+            auth.requestMatchers("/register","/webjars/**").permitAll();
             auth.anyRequest().authenticated();
         }).formLogin(login -> {
             login.loginPage("/login");
             login.loginProcessingUrl("/login");
-            login.usernameParameter("username");
-            login.passwordParameter("password");
             login.defaultSuccessUrl("/");
+            login.permitAll();
         }).logout(logout -> {
             logout.logoutUrl("/logout");
             logout.invalidateHttpSession(true);
-            logout.logoutSuccessUrl("/");
-            logout.deleteCookies("JSESSIONID");
+            logout.logoutSuccessUrl("/login");
+            logout.permitAll();
         });
 
         return http.build();
