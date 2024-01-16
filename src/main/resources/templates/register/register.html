@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/register}" method="post" th:object="${user}">
+    <input th:field="*{username}" type="text" name="username" placeholder="Uživatelské jméno"/>
+    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+
+    <input th:field="*{email}" type="text" name="email" placeholder="Email"/>
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+
+    <input th:field="*{password}" type="password" name="password" placeholder="Heslo"/>
+    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+
+    <input th:field="*{password2}" type="password" name="password2" placeholder="Potvrdit heslo"/>
+    <span th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></span>
+    <input type="submit" value="Registrovat se">
+</form>
+</body>
+</html>
