@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/register}" method="post">
+    <input type="text" name="username" placeholder="Uživatelské jméno"/>
+    <input type="text" name="email" placeholder="Email"/>
+    <input type="password" name="password" placeholder="Heslo"/>
+    <input type="password" name="password2" placeholder="Potvrdit heslo"/>
+    <input type="submit" value="Registrovat se">
+</form>
+</body>
+</html>

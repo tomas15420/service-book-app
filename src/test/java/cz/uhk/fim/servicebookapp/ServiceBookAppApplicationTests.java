@@ -1,4 +1,4 @@
-package cz.fim.uhk.servicebookapp;
+package cz.uhk.fim.servicebookapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

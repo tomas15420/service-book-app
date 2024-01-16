@@ -1,4 +1,4 @@
-package cz.fim.uhk.servicebookapp;
+package cz.uhk.fim.servicebookapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
