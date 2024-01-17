@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns="http://www.w3.org/1999/html">
+<head th:replace="layout :: head">
+    <title id="pageTitle">Přidat vozidlo</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0 mainContainer">
+    <!-- Navigation-->
+    <nav th:replace="layout :: nav">
+
+    </nav>
+    <!-- Content -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Přidat vozidlo</h3>
+                    <form th:action="@{/cars/add-car}" method="post" th:object="${car}">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="brand" class="form-label">Značka vozu</label>
+                                <select class="form-select" th:field="*{brand}" id="brand">
+                                    <option th:each="brand: ${brands}" th:value="${brand.id}" th:text="${brand.name}">
+
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="model" class="form-label">Model vozu</label>
+                                <input th:field="*{model}" id="model" class="form-control" type="text" name="model" th:classappend="${#fields.hasErrors('model') == true} ? 'is-invalid'" required/>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('model')}" th:errors="*{model}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="spz" class="form-label">Registrační značka</label>
+                                <input th:field="*{spz}" id="spz" class="form-control" type="text" name="spz" th:classappend="${#fields.hasErrors('spz') == true} ? 'is-invalid'" required/>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('spz')}" th:errors="*{spz}"></div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="nickname" class="form-label">Přezdívka (volitelné)</label>
+                                <input th:field="*{nickname}" id="nickname" class="form-control" type="text" name="nickname" th:classappend="${#fields.hasErrors('nickname') == true} ? 'is-invalid'"/>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex mt-3 justify-content-center">
+                            <input type="submit" class="btn btn-primary" value="Přidat vozidlo"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout :: footer">
+
+</footer>
+</body>
+</html>
