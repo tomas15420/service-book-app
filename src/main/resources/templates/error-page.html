@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="layout :: head">
+    <meta charset="UTF-8">
+    <title id="pageTitle" th:text="Chyba - ${responseCode}"></title>
+</head>
+<body class="vh-100">
+    <div class="d-flex align-items-center justify-content-center h-100">
+        <div class="d-flex flex-column align-items-center">
+            <h1 th:text="${responseCode}" class="display-4"></h1>
+            <p th:text="${errorMessage}"></p>
+            <div sec:authorize="isAuthenticated()" class="d-flex">
+                <a th:href="@{/}" class="btn btn-primary me-2">Zpět na nástěnku</a>
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Odhlásit se" class="btn btn-outline-danger"/>
+                </form>
+            </div>
+            <div sec:authorize="isAnonymous()" class="d-flex">
+                <a th:href="@{/login}" class="btn btn-primary me-2">Přihlášení</a>
+                <a th:href="@{/register}" class="btn btn-outline-info">Registrace</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

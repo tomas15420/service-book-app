@@ -1,6 +1,10 @@
 package cz.uhk.fim.servicebookapp.controller;
 
 import cz.uhk.fim.servicebookapp.dto.CarAddDto;
+import cz.uhk.fim.servicebookapp.exception.BadRequestException;
+import cz.uhk.fim.servicebookapp.exception.ForbiddenException;
+import cz.uhk.fim.servicebookapp.exception.NotFoundException;
+import cz.uhk.fim.servicebookapp.exception.UnauthorizedException;
 import cz.uhk.fim.servicebookapp.model.Car;
 import cz.uhk.fim.servicebookapp.model.CarBrand;
 import cz.uhk.fim.servicebookapp.model.User;
@@ -37,7 +41,7 @@ public class CarController {
 
     @PostMapping("/cars/add-car")
     public String addCar(@ModelAttribute("car") @Valid Car car, BindingResult bindingResult, Model model, Principal principal){
-        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
         if(bindingResult.hasErrors()){
             model.addAttribute("brands",carBrandService.getCarBrands());
             return "/car/add-car";
@@ -49,18 +53,18 @@ public class CarController {
 
     @GetMapping("/cars/{carId}/edit")
     public String editCarForm(Model model, @PathVariable Long carId, Principal principal){
-        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
-        Car car = carService.getCarById(carId).orElseThrow(() -> new RuntimeException("Vozidlo s tímto ID neexistuje"));
-        if(!car.getUser().equals(loggedUser)) return "redirect:/cars";
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        Car car = carService.getCarById(carId).orElseThrow(() -> new BadRequestException("Toto ID vozidla neexistuje"));
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněný přístup");
         model.addAttribute("car", car);
         model.addAttribute("brands", carBrandService.getCarBrands());
         return "/car/edit-car";
     }
     @PostMapping("/cars/{carId}/edit")
     public String editCar(@PathVariable Long carId, @ModelAttribute("car") @Valid Car car, BindingResult bindingResult, Model model, Principal principal){
-        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
-        Car foundCar = carService.getCarById(carId).orElseThrow(() -> new RuntimeException("Vozidlo s tímto ID neexistuje"));
-        if(!foundCar.getUser().equals(loggedUser)) throw new RuntimeException("Neoprávněná úprava vozidla");
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        Car foundCar = carService.getCarById(carId).orElseThrow(() -> new BadRequestException("Vozidlo s tímto ID neexistuje"));
+        if(!foundCar.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněná úprava vozidla");
         car.setId(foundCar.getId());
         car.setUser(foundCar.getUser());
 
@@ -74,9 +78,9 @@ public class CarController {
 
     @GetMapping("/cars/{carId}/delete")
     public String deleteCar(@PathVariable Long carId, Principal principal){
-        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
-        Car car = carService.getCarById(carId).orElseThrow(() -> new RuntimeException("Vozidlo s tímto ID neexistuje"));
-        if(!car.getUser().equals(loggedUser)) throw new RuntimeException("Neoprávněný přístup");
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        Car car = carService.getCarById(carId).orElseThrow(() -> new BadRequestException("Vozidlo s tímto ID neexistuje"));
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněný přístup");
 
         carService.delete(car);
         return "redirect:/cars?success=delete";
@@ -84,7 +88,7 @@ public class CarController {
 
     @GetMapping("/cars")
     public String carsList(Model model, Principal principal){
-        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
         model.addAttribute("cars", carService.getUserCars(loggedUser));
         return "car/car-list";
     }
