@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns="http://www.w3.org/1999/html">
 <head th:replace="layout :: head">
-    <title id="pageTitle">Přidat vozidlo</title>
+    <title id="pageTitle">Upravit vozidlo</title>
 </head>
 <body class="d-flex flex-column h-100">
 <main class="flex-shrink-0 mainContainer">
@@ -14,8 +14,8 @@
         <div class="container px-5">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title mb-3">Přidat vozidlo</h3>
-                    <form th:action="@{/cars/add-car}" method="post" th:object="${car}">
+                    <h3 class="card-title mb-3">Upravit vozidlo</h3>
+                    <form th:action="@{/cars/{carId}/edit(carId=${car.id})}" method="post" th:object="${car}">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="brand" class="form-label">Značka vozu</label>
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="d-flex mt-3 justify-content-center">
-                            <input type="submit" class="btn btn-primary" value="Přidat vozidlo"/>
+                            <input type="submit" class="btn btn-primary" value="Upravit vozidlo"/>
                         </div>
                     </form>
                 </div>

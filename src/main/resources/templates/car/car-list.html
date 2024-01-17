@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns="http://www.w3.org/1999/html">
 <head th:replace="layout :: head">
-    <title id="pageTitle">Page Title</title>
+    <title id="pageTitle">Seznam vozidel</title>
 </head>
 <body class="d-flex flex-column h-100">
 <main class="flex-shrink-0 mainContainer">
@@ -12,7 +12,22 @@
     <!-- Content -->
     <section class="py-5">
         <div class="container px-5">
-
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Tovární značka</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">SPZ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="car: ${cars}">
+                        <td th:text="${car.brand.name}"></td>
+                        <td th:text="${car.model}"></td>
+                        <td th:text="${car.spz}"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 </main>

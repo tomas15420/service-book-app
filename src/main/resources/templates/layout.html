@@ -27,7 +27,7 @@
                 <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.username"></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" th:href="@{/add-car}">Přidat vozidlo</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cars/add-car}">Přidat vozidlo</a></li>
                         <li class="dropdown-divider"></li>
                         <li><form th:action="@{/logout}" method="POST"><input type="submit" class="dropdown-item" value="Odhlásit se"/></form></li>
                     </ul>
