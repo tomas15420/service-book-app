@@ -37,5 +37,5 @@ public class Car {
     private User user;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.REMOVE)
-    private Set<Service> services;
+    private Set<ServiceRecord> services;
 }
