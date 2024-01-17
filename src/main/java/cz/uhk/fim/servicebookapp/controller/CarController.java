@@ -69,7 +69,17 @@ public class CarController {
             return "/car/add-car";
         }
         carService.save(car);
-        return "redirect:/cars";
+        return "redirect:/cars?success=add";
+    }
+
+    @GetMapping("/cars/{carId}/delete")
+    public String deleteCar(@PathVariable Long carId, Principal principal){
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("Nejste přihlášen"));
+        Car car = carService.getCarById(carId).orElseThrow(() -> new RuntimeException("Vozidlo s tímto ID neexistuje"));
+        if(!car.getUser().equals(loggedUser)) throw new RuntimeException("Neoprávněný přístup");
+
+        carService.delete(car);
+        return "redirect:/cars?success=delete";
     }
 
     @GetMapping("/cars")
