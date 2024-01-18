@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns="http://www.w3.org/1999/html">
+<head th:replace="layout :: head">
+    <title id="pageTitle">Servisní záznamy</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0 mainContainer">
+    <!-- Navigation-->
+    <nav th:replace="layout :: nav">
+
+    </nav>
+    <!-- Content -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Filtry</h5>
+                            <form th:action="@{/service-records}" method="get">
+                                <div class="mb-2">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Servisní záznamy</h5>
+                            <table class="table">
+                                <thead>
+
+                                </thead>
+                                <tbody>
+                                    <tr th:each="record: ${records}">
+                                        <td th:text="${record.id}"></td>
+                                        <td th:text="${record.date}"></td>
+                                        <td th:text="${record.cost + ' CZK'}"></td>
+                                        <td th:text="${record.car.model}"></td>
+                                        <td th:text="${record.operation.name}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p th:text="${records.getNumber()}"></p>
+                            <p th:text="${records.getTotalPages()}"></p>
+                            <p th:text="${records.getTotalElements()}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout :: footer">
+
+</footer>
+</body>
+</html>
