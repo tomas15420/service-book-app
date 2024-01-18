@@ -24,6 +24,6 @@ public class Operation {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
-    @OneToMany(mappedBy = "operation")
+    @OneToMany(mappedBy = "operation", orphanRemoval = true)
     private Set<ServiceRecord> services;
 }
