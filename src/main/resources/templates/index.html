@@ -1,13 +1,113 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="layout :: head">
-    <title id="pageTitle">Domů</title>
+    <title id="pageTitle">Nástěnka</title>
 </head>
 <body class="d-flex flex-column h-100">
 <main class="flex-shrink-0 mainContainer">
     <nav th:replace="layout :: nav">
 
     </nav>
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-3 ">
+                <div class="col-md-4">
+                    <a href="/service-records" class="text-decoration-none text-black">
+                        <div class="p-2 bg-warning rounded">
+                            <div class="m-2 d-flex align-items-center flex-column">
+                                <span class="display-4" th:text="${records.getTotalElements()}"></span>
+                                <span class="text-uppercase fw-lighter">Servisní záznamy</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                        <div class="p-2 bg-info rounded">
+                            <div class="m-2 d-flex align-items-center flex-column">
+                                <span class="display-4" th:text="${totalCosts + ' Kč'}"></span>
+                                <span class="text-uppercase fw-lighter">Celková útrata</span>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-4">
+                    <a href="/cars" class="text-decoration-none text-black">
+                        <div class="p-2 bg-danger rounded">
+                            <div class="m-2 d-flex align-items-center flex-column">
+                                <span class="display-4" th:text="${cars.size()}"></span>
+                                <span class="text-uppercase fw-lighter">Vozidla</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="card mt-3 border-black">
+                <h5 class="card-header">
+                    Moje vozidla
+                </h5>
+                <div class="card-body">
+                    <div class="row equal row-cols-1 row-cols-md-6 row-cols-sm-2 g-3">
+                        <div th:each="car:${cars}" class="col">
+                            <a th:href="@{/cars/{carId}(carId=${car.id})}" class="text-decoration-none text-black h-100" >
+                                <div class="d-flex flex-column align-items-center h-100 border border-1 rounded p-2" >
+                                    <div th:text="${car.nickname}" class="text-uppercase fw-lighter"></div>
+                                    <div th:style="'min-height: 80px; min-width:80px; background-image: url('+ @{/images/car-brands/} + ${car.brand.image} +'); background-size: contain; background-repeat: no-repeat; background-position:center'"></div>
+                                    <div class="mt-auto" th:text="${car.brand.name + ' ' + car.model}"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="/cars/add-car" class="text-decoration-none text-black h-100 bg-info-subtle">
+                                <div class="d-flex align-items-center justify-content-center h-100 border border-1 rounded p-2" >
+                                    <span class="display-6"><i class="fa-solid fa-plus"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3 border-black">
+                <h5 class="card-header">
+                    Posledních 10 záznamů
+                </h5>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Datum</th>
+                                <th scope="col">Úkon</th>
+                                <th scope="col">Vozidlo</th>
+                                <th scope="col">Cena</th>
+                                <th scope="col">Stav tachometru</th>
+                                <th scope="col">Akce</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="record: ${records}">
+                                <td th:text="${#temporals.format(record.date,'dd.MM.yyyy')}"></td>
+                                <td>
+                                    <a th:text="${record.operation.name}" th:href="@{/service-records/{serviceId}(serviceId=${record.id})}"></a>
+                                </td>
+                                <td>
+                                    <a th:text="${record.car.brand.name + ' ' + record.car.model + (!record.car.nickname.isEmpty() ? ' (' + record.car.nickname + ')' : '')}"
+                                       th:href="@{/cars/{carId}(carId=${record.car.id})}">
+                                    </a>
+                                </td>
+                                <td th:text="${record.cost + ' Kč'}"></td>
+                                <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
+                                <td>
+                                    <a th:href="@{/service-records/{serviceId}/edit(serviceId=${record.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a th:href="@{/service-records/{serviceId}/delete(serviceId=${record.id})}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a th:text="${records.getTotalElements() > 10} ? 'Zobrazit další' : 'Přejít na záznamy'" href="/service-records" class="btn btn-primary float-end"></a>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 <!-- Footer-->
 <footer th:replace="layout :: footer">

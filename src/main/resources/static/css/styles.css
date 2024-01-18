@@ -1,3 +1,13 @@
 .mainContainer{
     min-height: calc(100vh - (34px + 35px));
 }
+
+.equal{
+    display: flex;;
+    flex-wrap: wrap;
+}
+
+.equal > [class*='col']{
+    display: flex;
+    flex-direction: column;
+}
