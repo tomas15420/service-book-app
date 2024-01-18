@@ -21,7 +21,7 @@ public class Car {
 
     @Column(length = 64, nullable = false)
     @NotBlank(message = "Model musí být vyplněn")
-    @Size(min = 3, max = 64, message = "Model musí mít minimálně 3 a maximálně 64 znaků")
+    @Size(min = 1, max = 64, message = "Model musí mít minimálně 1 a maximálně 64 znaků")
     private String model;
 
     @Column(length = 32)

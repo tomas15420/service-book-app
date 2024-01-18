@@ -1,7 +1,5 @@
 package cz.uhk.fim.servicebookapp.dto;
 
-import cz.uhk.fim.servicebookapp.model.Operation;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,7 +20,7 @@ public class ServiceAddDto {
     private Integer cost;
     @Size(max = 512, message = "Maximální délka popisu může být 512 znaků")
     private String description;
-    private Long operation;
+    private Long operationId;
     @Size(max = 32, message = "Maximální délka úkonu může být 32 znaků")
     private String newOperation;
 }

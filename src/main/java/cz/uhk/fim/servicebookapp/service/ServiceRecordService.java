@@ -5,6 +5,8 @@ import cz.uhk.fim.servicebookapp.repository.ServiceRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ServiceRecordService {
@@ -12,5 +14,13 @@ public class ServiceRecordService {
 
     public void save(ServiceRecord serviceRecord){
         serviceRecordRepository.save(serviceRecord);
+    }
+
+    public Optional<ServiceRecord> getServiceRecordById(Long id){
+        return serviceRecordRepository.findById(id);
+    }
+
+    public void delete(ServiceRecord serviceRecord){
+        serviceRecordRepository.delete(serviceRecord);
     }
 }

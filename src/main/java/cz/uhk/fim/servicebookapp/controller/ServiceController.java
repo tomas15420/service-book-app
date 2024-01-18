@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class ServiceController {
         if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Nemáte oprávnění k přidání záznamu k tomuto vozidlu");
 
         Operation operation = null;
-        if(serviceDto.getOperation() == null || serviceDto.getOperation() == 0){
+        if(serviceDto.getOperationId() == null || serviceDto.getOperationId() == 0){
             if(serviceDto.getNewOperation().isBlank()){
                 bindingResult.rejectValue("newOperation",null,"Vytvořte nebo vyberte úkon pro vozidlo");
             }else{
@@ -66,7 +65,7 @@ public class ServiceController {
             }
         }
         else{
-            operation = operationService.getOperationById(serviceDto.getOperation()).orElseThrow(() -> new BadRequestException("Chybný požadavek, zkuste to znovu"));
+            operation = operationService.getOperationById(serviceDto.getOperationId()).orElseThrow(() -> new BadRequestException("Chybný požadavek, zkuste to znovu"));
         }
 
         if(bindingResult.hasErrors()){
@@ -81,5 +80,75 @@ public class ServiceController {
         serviceRecordService.save(serviceRecord);
 
         return "redirect:/cars/"+carId+"?success=add_service";
+    }
+
+    @GetMapping("/service-records/{serviceId}/edit")
+    public String editServiceForm(@PathVariable Long serviceId, Model model, Principal principal){
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        ServiceRecord serviceRecord = serviceRecordService.getServiceRecordById(serviceId).orElseThrow(() -> new BadRequestException("Servisní záznam s tímto ID neexistuje"));
+
+        Car car = serviceRecord.getCar();
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Nemáte oprávnění k úpravě tohoto záznamu");
+
+        ServiceAddDto serviceDto = modelMapper.map(serviceRecord, ServiceAddDto.class);
+        serviceDto.setOperationId(serviceRecord.getOperation().getId());
+
+        model.addAttribute("operations", operationService.getUserOperations(loggedUser));
+        model.addAttribute("car", car);
+        model.addAttribute("service", serviceDto);
+        return "service/edit-service";
+    }
+
+    @PostMapping("/service-records/{serviceId}/edit")
+    public String editService(@PathVariable Long serviceId, @ModelAttribute("service") @Valid ServiceAddDto serviceDto, BindingResult bindingResult, Model model, Principal principal){
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        ServiceRecord serviceRecord = serviceRecordService.getServiceRecordById(serviceId).orElseThrow(() -> new BadRequestException("Servisní záznam s tímto ID neexistuje"));
+
+        Car car = serviceRecord.getCar();
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Nemáte oprávnění k přidání záznamu k tomuto vozidlu");
+
+        Operation operation = null;
+        if(serviceDto.getOperationId() == null || serviceDto.getOperationId() == 0){
+            if(serviceDto.getNewOperation().isBlank()){
+                bindingResult.rejectValue("newOperation",null,"Vytvořte nebo vyberte úkon pro vozidlo");
+            }else{
+                operation = operationService.getOperationByName(serviceDto.getNewOperation())
+                        .orElseGet(() -> {
+                            Operation newOperation = Operation.builder().user(loggedUser).name(serviceDto.getNewOperation()).build();
+                            operationService.save(newOperation);
+                            return newOperation;
+                        });
+            }
+        }
+        else{
+            operation = operationService.getOperationById(serviceDto.getOperationId()).orElseThrow(() -> new BadRequestException("Chybný požadavek, zkuste to znovu"));
+        }
+
+        if(bindingResult.hasErrors()){
+            model.addAttribute("operations", operationService.getUserOperations(loggedUser));
+            model.addAttribute("car", car);
+            return "service/edit-service";
+        }
+
+        serviceRecord = modelMapper.map(serviceDto, ServiceRecord.class);
+        serviceRecord.setId(serviceId);
+        serviceRecord.setOperation(operation);
+        serviceRecord.setCar(car);
+
+        System.out.println(serviceRecord);
+
+        serviceRecordService.save(serviceRecord);
+
+        return "redirect:/service-records/?success=edit";
+    }
+
+    @GetMapping("/service-records/{serviceId}/delete")
+    public String deleteService(@PathVariable Long serviceId, Principal principal){
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        ServiceRecord serviceRecord = serviceRecordService.getServiceRecordById(serviceId).orElseThrow(() -> new BadRequestException("Servisní záznam s tímto ID neexistuje"));
+        if(!serviceRecord.getCar().getUser().equals(loggedUser)) throw new ForbiddenException("Nemůžete smazat cizí záznam");
+
+        serviceRecordService.delete(serviceRecord);
+        return "redirect:/service-records/?success=delete";
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns="http://www.w3.org/1999/html">
 <head th:replace="layout :: head">
-    <title id="pageTitle">Přidat servisní záznam</title>
+    <title id="pageTitle">Upravit servisní záznam</title>
 </head>
 <body class="d-flex flex-column h-100">
 <main class="flex-shrink-0 mainContainer">
@@ -14,11 +14,11 @@
         <div class="container px-5">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">Přidat servisní záznam k vozidlu</h3>
+                    <h3 class="card-title">Upravit servisní záznam k vozidlu</h3>
                     <h5 th:object="${car}" th:text="*{brand.name + ' ' + model + (nickname.length() > 0 ? ' (' + nickname + ')' : '')}" class="fw-light mb-3">
 
                     </h5>
-                    <form th:action="@{/cars/{carId}/service-records/add(carId=${car.id})}" method="post" th:object="${service}">
+                    <form th:action="@{/service-records/{serviceId}/edit(serviceId=${service.id})}" method="post" th:object="${service}">
                         <div class="row g-3">
                             <div class="col-md-6" id="operationDiv">
                                 <label for="operation" class="form-label">Typ úkonu na vozidle</label>
@@ -58,7 +58,7 @@
                             </div>
                           </div>
                         <div class="d-flex mt-3 justify-content-center">
-                            <input type="submit" class="btn btn-primary" value="Přidat servisní záznam k vozidlu"/>
+                            <input type="submit" class="btn btn-primary" value="Upravit servisní záznam k vozidlu"/>
                         </div>
                     </form>
                 </div>

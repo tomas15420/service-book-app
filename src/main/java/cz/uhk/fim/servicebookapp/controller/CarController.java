@@ -1,12 +1,9 @@
 package cz.uhk.fim.servicebookapp.controller;
 
-import cz.uhk.fim.servicebookapp.dto.CarAddDto;
 import cz.uhk.fim.servicebookapp.exception.BadRequestException;
 import cz.uhk.fim.servicebookapp.exception.ForbiddenException;
-import cz.uhk.fim.servicebookapp.exception.NotFoundException;
 import cz.uhk.fim.servicebookapp.exception.UnauthorizedException;
 import cz.uhk.fim.servicebookapp.model.Car;
-import cz.uhk.fim.servicebookapp.model.CarBrand;
 import cz.uhk.fim.servicebookapp.model.User;
 import cz.uhk.fim.servicebookapp.service.CarBrandService;
 import cz.uhk.fim.servicebookapp.service.CarService;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -70,7 +65,7 @@ public class CarController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("brands",carBrandService.getCarBrands());
-            return "/car/add-car";
+            return "/car/edit-car";
         }
         carService.save(car);
         return "redirect:/cars?success=add";
