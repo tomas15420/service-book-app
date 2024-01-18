@@ -29,7 +29,7 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/register","/webjars/**", "/css/**", "/images/**").permitAll();
+            auth.requestMatchers("/register","/webjars/**", "/css/**", "/images/**", "/js/**").permitAll();
             auth.anyRequest().authenticated();
         }).formLogin(login -> {
             login.loginPage("/login");

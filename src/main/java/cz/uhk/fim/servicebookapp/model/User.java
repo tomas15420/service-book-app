@@ -28,6 +28,8 @@ public class User implements UserDetails {
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Car> cars;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Operation> operations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
