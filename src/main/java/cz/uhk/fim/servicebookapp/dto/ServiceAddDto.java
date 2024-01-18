@@ -11,7 +11,6 @@ import java.time.LocalDate;
 public class ServiceAddDto {
     private Long id;
     @Min(value = 0, message = "Minimální hodnota nájezdu musí být 0")
-    @NotNull(message = "Stav tachometru musí být vyplněn")
     private Integer mileage;
     @NotNull(message = "Datum musí být vyplněn")
     private LocalDate date;

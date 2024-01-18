@@ -142,7 +142,7 @@ public class ServiceController {
 
         serviceRecordService.save(serviceRecord);
 
-        return "redirect:/service-records/?success=edit";
+        return "redirect:/service-records?success=edit";
     }
 
     @GetMapping("/service-records/{serviceId}/delete")
@@ -152,7 +152,7 @@ public class ServiceController {
         if(!serviceRecord.getCar().getUser().equals(loggedUser)) throw new ForbiddenException("Nemůžete smazat cizí záznam");
 
         serviceRecordService.delete(serviceRecord);
-        return "redirect:/service-records/?success=delete";
+        return "redirect:/service-records?success=delete";
     }
 
     @GetMapping("/service-records")
@@ -167,14 +167,19 @@ public class ServiceController {
 
         User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
 
+        if(startDate != null && endDate != null && startDate.isAfter(endDate)){
+            throw new BadRequestException("Od nemůže být později než Do");
+        }
+
         Sort sort = Sort.by(sortDirection, field.getDatabaseFieldName());
-        Pageable pageable = PageRequest.of(page-1,2, sort);
+        Pageable pageable = PageRequest.of(page-1,10, sort);
 
         Page<ServiceRecord> records = serviceRecordService.findAllByUser(loggedUser,carId, operationId, startDate, endDate, pageable);
 
         model.addAttribute("records", records);
         model.addAttribute("cars", carService.getUserCars(loggedUser));
         model.addAttribute("operations", operationService.getUserOperations(loggedUser));
+
         return "/service/records";
     }
 }
