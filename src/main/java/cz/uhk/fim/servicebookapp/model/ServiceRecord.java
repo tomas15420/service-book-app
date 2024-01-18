@@ -13,7 +13,6 @@ public class ServiceRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private Integer mileage;
 
     @Column(nullable = false)

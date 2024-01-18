@@ -1,6 +1,7 @@
 package cz.uhk.fim.servicebookapp.controller;
 
 import cz.uhk.fim.servicebookapp.dto.ServiceAddDto;
+import cz.uhk.fim.servicebookapp.enumeration.ServiceRecordSortField;
 import cz.uhk.fim.servicebookapp.exception.BadRequestException;
 import cz.uhk.fim.servicebookapp.exception.ForbiddenException;
 import cz.uhk.fim.servicebookapp.exception.UnauthorizedException;
@@ -15,15 +16,17 @@ import cz.uhk.fim.servicebookapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 @Controller
 @RequiredArgsConstructor
@@ -139,7 +142,7 @@ public class ServiceController {
 
         serviceRecordService.save(serviceRecord);
 
-        return "redirect:/service-records/?success=edit";
+        return "redirect:/service-records?success=edit";
     }
 
     @GetMapping("/service-records/{serviceId}/delete")
@@ -149,6 +152,34 @@ public class ServiceController {
         if(!serviceRecord.getCar().getUser().equals(loggedUser)) throw new ForbiddenException("Nemůžete smazat cizí záznam");
 
         serviceRecordService.delete(serviceRecord);
-        return "redirect:/service-records/?success=delete";
+        return "redirect:/service-records?success=delete";
+    }
+
+    @GetMapping("/service-records")
+    public String serviceRecordsPage(Model model, Principal principal
+            , @RequestParam(required = false) Long carId
+            , @RequestParam(required = false) Long operationId
+            , @RequestParam(required = false) LocalDate startDate
+            , @RequestParam(required = false) LocalDate endDate
+            , @RequestParam(defaultValue = "DATE") ServiceRecordSortField field
+            , @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection
+            , @RequestParam(defaultValue = "1") Integer page){
+
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+
+        if(startDate != null && endDate != null && startDate.isAfter(endDate)){
+            throw new BadRequestException("Od nemůže být později než Do");
+        }
+
+        Sort sort = Sort.by(sortDirection, field.getDatabaseFieldName());
+        Pageable pageable = PageRequest.of(page-1,10, sort);
+
+        Page<ServiceRecord> records = serviceRecordService.findAllByUser(loggedUser,carId, operationId, startDate, endDate, pageable);
+
+        model.addAttribute("records", records);
+        model.addAttribute("cars", carService.getUserCars(loggedUser));
+        model.addAttribute("operations", operationService.getUserOperations(loggedUser));
+
+        return "/service/records";
     }
 }
