@@ -173,7 +173,8 @@ public class ServiceController {
         Page<ServiceRecord> records = serviceRecordService.findAllByUser(loggedUser,carId, operationId, startDate, endDate, pageable);
 
         model.addAttribute("records", records);
-        System.out.println(records.getContent());
+        model.addAttribute("cars", carService.getUserCars(loggedUser));
+        model.addAttribute("operations", operationService.getUserOperations(loggedUser));
         return "/service/records";
     }
 }

@@ -13,13 +13,58 @@
     <section class="py-5">
         <div class="container px-5">
             <div class="row g-3">
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-5">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Filtry</h5>
-                            <form th:action="@{/service-records}" method="get">
-                                <div class="mb-2">
+                            <form th:action="@{/service-records}" method="get" class="row g-3">
+                                <div class="col-xl-6">
+                                    <label for="field" class="form-label">Seřadit podle</label>
+                                    <select name="field" id="field" class="form-select">
+                                        <option th:value="DATE" th:selected="${#strings.equals(param.field,'DATE')}">Data přidání</option>
+                                        <option th:value="COST" th:selected="${#strings.equals(param.field,'COST')}">Ceny opravy</option>
+                                    </select>
                                 </div>
+                                <div class="col-xl-6">
+                                    <label for="sortDirection" class="form-label">Směr</label>
+                                    <select name="sortDirection" id="sortDirection" class="form-select">
+                                        <option value="DESC" th:selected="${#strings.equals(param.sortDirection,'DESC')}">Sestupně</option>
+                                        <option value="ASC" th:selected="${#strings.equals(param.sortDirection,'ASC')}">Vzestupně</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="operationId">Servisní úkon</label>
+                                    <select id="operationId" name="operationId" class="form-select">
+                                        <option value="" th:selected="${#strings.equals(param.operationId,'')}">-</option>
+                                        <option
+                                                th:each="operation: ${operations}"
+                                                th:value="${operation.id}"
+                                                th:selected="${#strings.equals(param.operationId,operation.id)}"
+                                                th:text="${operation.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="carId">Vozidlo</label>
+                                    <select id="carId" name="carId" class="form-select">
+                                        <option value="" th:selected="${#strings.equals(param.carId,'')}">-</option>
+                                        <option
+                                                th:each="car: ${cars}"
+                                                th:value="${car.id}"
+                                                th:selected="${#strings.equals(param.carId,car.id)}"
+                                                th:text="${car.brand.name + ' ' + car.model + (!car.nickname.isEmpty() ? ' (' + car.nickname + ')' : '')}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="startDate" class="form-label">Od</label>
+                                    <input class="form-control" type="date" id="startDate" name="startDate" th:value="${param.startDate}"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endDate" class="form-label">Do</label>
+                                    <input class="form-control" type="date" id="endDate" name="endDate" th:value="${param.endDate}"/>
+                                </div>
+                                <input type="submit" value="Filtrovat" class="btn btn-primary" >
                             </form>
                         </div>
                     </div>
@@ -45,6 +90,7 @@
                             <p th:text="${records.getNumber()}"></p>
                             <p th:text="${records.getTotalPages()}"></p>
                             <p th:text="${records.getTotalElements()}"></p>
+                            <p th:text="${#strings.equals(param.field,'COST')}"></p>
                         </div>
                     </div>
                 </div>
