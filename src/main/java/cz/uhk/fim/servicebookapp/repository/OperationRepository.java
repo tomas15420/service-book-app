@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface OperationRepository extends JpaRepository<Operation, Long> {
     List<Operation> getOperationsByUser(User user);
-    Optional<Operation> getOperationsByName(String name);
+    Optional<Operation> getOperationsByUserAndName(User User, String name);
 }

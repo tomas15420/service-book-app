@@ -27,17 +27,17 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="model" class="form-label">Model vozu</label>
-                                <input th:field="*{model}" id="model" class="form-control" type="text" name="model" th:classappend="${#fields.hasErrors('model') == true} ? 'is-invalid'" required/>
+                                <input th:field="*{model}" id="model" class="form-control" type="text" maxlength="64" name="model" th:classappend="${#fields.hasErrors('model') == true} ? 'is-invalid'" required/>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('model')}" th:errors="*{model}"></div>
                             </div>
                             <div class="col-md-4">
                                 <label for="spz" class="form-label">Registrační značka</label>
-                                <input th:field="*{spz}" id="spz" class="form-control" type="text" name="spz" th:classappend="${#fields.hasErrors('spz') == true} ? 'is-invalid'" required/>
+                                <input th:field="*{spz}" id="spz" class="form-control" type="text" maxlength="7" name="spz" th:classappend="${#fields.hasErrors('spz') == true} ? 'is-invalid'" required/>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('spz')}" th:errors="*{spz}"></div>
                             </div>
                             <div class="col-md-12">
                                 <label for="nickname" class="form-label">Přezdívka (volitelné)</label>
-                                <input th:field="*{nickname}" id="nickname" class="form-control" type="text" name="nickname" th:classappend="${#fields.hasErrors('nickname') == true} ? 'is-invalid'"/>
+                                <input th:field="*{nickname}" id="nickname" class="form-control" type="text" maxlength="32" name="nickname" th:classappend="${#fields.hasErrors('nickname') == true} ? 'is-invalid'"/>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></div>
                             </div>
                         </div>

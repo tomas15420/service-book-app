@@ -83,7 +83,6 @@
                                         <th scope="col">Vozidlo</th>
                                         <th scope="col">Cena</th>
                                         <th scope="col">Stav tachometru</th>
-                                        <th scope="col">Akce</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -97,13 +96,9 @@
                                                th:href="@{/cars/{carId}(carId=${record.car.id})}">
                                             </a>
                                         </td>
-                                        <td th:text="${record.cost + ' Kč'}"></td>
-                                        <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
-                                        <td>
-                                            <a th:href="@{/service-records/{serviceId}/edit(serviceId=${record.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i></a>
-                                            <a th:href="@{/service-records/{serviceId}/delete(serviceId=${record.id})}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                                            <td th:text="${record.cost + ' Kč'}"></td>
+                                            <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

@@ -59,7 +59,7 @@ public class ServiceController {
             if(serviceDto.getNewOperation().isBlank()){
                 bindingResult.rejectValue("newOperation",null,"Vytvořte nebo vyberte úkon pro vozidlo");
             }else{
-                operation = operationService.getOperationByName(serviceDto.getNewOperation())
+                operation = operationService.getUserOperationByName(loggedUser, serviceDto.getNewOperation())
                         .orElseGet(() -> {
                             Operation newOperation = Operation.builder().user(loggedUser).name(serviceDto.getNewOperation()).build();
                             operationService.save(newOperation);
@@ -115,7 +115,7 @@ public class ServiceController {
             if(serviceDto.getNewOperation().isBlank()){
                 bindingResult.rejectValue("newOperation",null,"Vytvořte nebo vyberte úkon pro vozidlo");
             }else{
-                operation = operationService.getOperationByName(serviceDto.getNewOperation())
+                operation = operationService.getUserOperationByName(loggedUser, serviceDto.getNewOperation())
                         .orElseGet(() -> {
                             Operation newOperation = Operation.builder().user(loggedUser).name(serviceDto.getNewOperation()).build();
                             operationService.save(newOperation);
@@ -142,17 +142,18 @@ public class ServiceController {
 
         serviceRecordService.save(serviceRecord);
 
-        return "redirect:/service-records?success=edit";
+        return "redirect:/service-records/"+serviceId+"?success=edit";
     }
 
     @GetMapping("/service-records/{serviceId}/delete")
     public String deleteService(@PathVariable Long serviceId, Principal principal){
         User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
         ServiceRecord serviceRecord = serviceRecordService.getServiceRecordById(serviceId).orElseThrow(() -> new BadRequestException("Servisní záznam s tímto ID neexistuje"));
-        if(!serviceRecord.getCar().getUser().equals(loggedUser)) throw new ForbiddenException("Nemůžete smazat cizí záznam");
+        Car car = serviceRecord.getCar();
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Nemůžete smazat cizí záznam");
 
         serviceRecordService.delete(serviceRecord);
-        return "redirect:/service-records?success=delete";
+        return "redirect:/cars/"+car.getId()+"?success=service-record-delete";
     }
 
     @GetMapping("/service-records")
@@ -181,5 +182,21 @@ public class ServiceController {
         model.addAttribute("operations", operationService.getUserOperations(loggedUser));
 
         return "/service/records";
+    }
+
+    @GetMapping("/service-records/{serviceId}")
+    public String serviceRecordPage(@PathVariable Long serviceId, Model model, Principal principal){
+        User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
+        ServiceRecord serviceRecord = serviceRecordService.getServiceRecordById(serviceId).orElseThrow(() -> new BadRequestException("Servisní záznam s tímto ID neexistuje"));
+        if(!loggedUser.equals(serviceRecord.getCar().getUser())) throw new ForbiddenException("Nemáte oprávnění zobrazit cizí záznam");
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ServiceRecordSortField.DATE.getDatabaseFieldName());
+        Pageable pageable = PageRequest.of(0,10, sort);
+
+        Page<ServiceRecord> records = serviceRecordService.findAllByUser(loggedUser, null, serviceRecord.getOperation().getId(),null, null , pageable);
+
+        model.addAttribute("record", serviceRecord);
+        model.addAttribute("sameTypeRecords", records);
+        return "/service/record";
     }
 }

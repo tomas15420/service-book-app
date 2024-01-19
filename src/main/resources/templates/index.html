@@ -24,21 +24,19 @@
                 <div class="col-md-4">
                         <div class="p-2 bg-info rounded">
                             <div class="m-2 d-flex align-items-center flex-column">
-                                <span class="display-4" th:text="${totalCosts + ' Kč'}"></span>
+                                <span class="display-4" th:text="${((totalCosts != null) ? totalCosts : 0) + ' Kč'}"></span>
                                 <span class="text-uppercase fw-lighter">Celková útrata</span>
                             </div>
                         </div>
                 </div>
                 <div class="col-md-4">
-                    <a href="/cars" class="text-decoration-none text-black">
-                        <div class="p-2 bg-danger rounded">
-                            <div class="m-2 d-flex align-items-center flex-column">
-                                <span class="display-4" th:text="${cars.size()}"></span>
-                                <span class="text-uppercase fw-lighter">Vozidla</span>
-                            </div>
+                    <div class="p-2 bg-danger rounded">
+                        <div class="m-2 d-flex align-items-center flex-column">
+                            <span class="display-4" th:text="${cars.size()}"></span>
+                            <span class="text-uppercase fw-lighter">Vozidla</span>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                 </div>
             </div>
             <div class="card mt-3 border-black">
                 <h5 class="card-header">
@@ -49,9 +47,9 @@
                         <div th:each="car:${cars}" class="col">
                             <a th:href="@{/cars/{carId}(carId=${car.id})}" class="text-decoration-none text-black h-100" >
                                 <div class="d-flex flex-column align-items-center h-100 border border-1 rounded p-2" >
-                                    <div th:text="${car.nickname}" class="text-uppercase fw-lighter"></div>
-                                    <div th:style="'min-height: 80px; min-width:80px; background-image: url('+ @{/images/car-brands/} + ${car.brand.image} +'); background-size: contain; background-repeat: no-repeat; background-position:center'"></div>
-                                    <div class="mt-auto" th:text="${car.brand.name + ' ' + car.model}"></div>
+                                    <div th:text="${car.nickname}" class="text-uppercase fw-lighter text-break"></div>
+                                    <div th:style="'min-height: 80px; min-width:80px; background-image: url('+ @{/images/car-brands/} + ${car.brand.image} +'); background-size: contain; background-repeat: no-repeat; background-position:center; background-position-y-cente'"></div>
+                                    <div class="mt-auto text-break" th:text="${car.brand.name + ' ' + car.model}"></div>
                                 </div>
                             </a>
                         </div>
@@ -79,7 +77,6 @@
                                 <th scope="col">Vozidlo</th>
                                 <th scope="col">Cena</th>
                                 <th scope="col">Stav tachometru</th>
-                                <th scope="col">Akce</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -95,10 +92,6 @@
                                 </td>
                                 <td th:text="${record.cost + ' Kč'}"></td>
                                 <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
-                                <td>
-                                    <a th:href="@{/service-records/{serviceId}/edit(serviceId=${record.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <a th:href="@{/service-records/{serviceId}/delete(serviceId=${record.id})}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
-                                </td>
                             </tr>
                             </tbody>
                         </table>

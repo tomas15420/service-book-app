@@ -11,6 +11,7 @@ import cz.uhk.fim.servicebookapp.service.CarBrandService;
 import cz.uhk.fim.servicebookapp.service.CarService;
 import cz.uhk.fim.servicebookapp.service.ServiceRecordService;
 import cz.uhk.fim.servicebookapp.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,7 @@ public class CarController {
         }
         car.setUser(loggedUser);
         carService.save(car);
-        return "redirect:/cars";
+        return "redirect:/?success=car-add";
     }
 
     @GetMapping("/cars/{carId}/edit")
@@ -76,17 +77,17 @@ public class CarController {
             return "/car/edit-car";
         }
         carService.save(car);
-        return "redirect:/cars?success=add";
+        return "redirect:/cars/"+car.getId()+"?success=car-edit";
     }
 
     @GetMapping("/cars/{carId}/delete")
-    public String deleteCar(@PathVariable Long carId, Principal principal){
+    public String deleteCar(@PathVariable Long carId, Principal principal, HttpServletRequest request){
         User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
         Car car = carService.getCarById(carId).orElseThrow(() -> new BadRequestException("Vozidlo s tímto ID neexistuje"));
         if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněný přístup");
 
         carService.delete(car);
-        return "redirect:/cars?success=delete";
+        return "redirect:/?success=car-delete";
     }
 
     @GetMapping("/cars/{carId}")

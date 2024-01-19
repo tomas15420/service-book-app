@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-md-6" id="newOperationDiv">
                                 <label for="newOperation" class="form-label">Nový úkon</label>
-                                <input th:field="*{newOperation}" id="newOperation" class="form-control" type="text" name="newOperation" th:classappend="${#fields.hasErrors('newOperation') == true} ? 'is-invalid'"/>
+                                <input th:field="*{newOperation}" id="newOperation" class="form-control" type="text" maxlength="32" name="newOperation" th:classappend="${#fields.hasErrors('newOperation') == true} ? 'is-invalid'"/>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('newOperation')}" th:errors="*{newOperation}"></div>
                             </div>
                             <div class="col-md-4">
