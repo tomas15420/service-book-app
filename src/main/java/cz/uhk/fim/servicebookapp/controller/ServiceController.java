@@ -181,7 +181,7 @@ public class ServiceController {
         model.addAttribute("cars", carService.getUserCars(loggedUser));
         model.addAttribute("operations", operationService.getUserOperations(loggedUser));
 
-        return "/service/records";
+        return "service/records";
     }
 
     @GetMapping("/service-records/{serviceId}")
@@ -197,6 +197,6 @@ public class ServiceController {
 
         model.addAttribute("record", serviceRecord);
         model.addAttribute("sameTypeRecords", records);
-        return "/service/record";
+        return "service/record";
     }
 }

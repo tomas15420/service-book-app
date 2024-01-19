@@ -2,6 +2,8 @@ package cz.uhk.fim.servicebookapp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 
@@ -26,6 +28,7 @@ public class ServiceRecord {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "carId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Car car;
 
     @ManyToOne(fetch = FetchType.LAZY)

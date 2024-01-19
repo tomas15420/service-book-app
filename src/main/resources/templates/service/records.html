@@ -102,7 +102,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <nav class="d-flex justify-content-center">
+                            <nav class="d-flex justify-content-center" th:if="${records.getNumberOfElements() > 0}">
                                 <ul class="pagination">
                                     <li class="page-item" th:if="${records.getNumber() != 0}">
                                         <a class="page-link" aria-label="Previous"

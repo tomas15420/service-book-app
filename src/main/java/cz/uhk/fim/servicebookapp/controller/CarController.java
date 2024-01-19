@@ -48,7 +48,7 @@ public class CarController {
         User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
         if(bindingResult.hasErrors()){
             model.addAttribute("brands",carBrandService.getCarBrands());
-            return "/car/add-car";
+            return "car/add-car";
         }
         car.setUser(loggedUser);
         carService.save(car);
@@ -62,7 +62,7 @@ public class CarController {
         if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněný přístup");
         model.addAttribute("car", car);
         model.addAttribute("brands", carBrandService.getCarBrands());
-        return "/car/edit-car";
+        return "car/edit-car";
     }
     @PostMapping("/cars/{carId}/edit")
     public String editCar(@PathVariable Long carId, @ModelAttribute("car") @Valid Car car, BindingResult bindingResult, Model model, Principal principal){
@@ -74,7 +74,7 @@ public class CarController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("brands",carBrandService.getCarBrands());
-            return "/car/edit-car";
+            return "car/edit-car";
         }
         carService.save(car);
         return "redirect:/cars/"+car.getId()+"?success=car-edit";

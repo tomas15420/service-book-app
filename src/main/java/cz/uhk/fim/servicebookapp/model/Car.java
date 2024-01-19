@@ -36,6 +36,6 @@ public class Car {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private Set<ServiceRecord> services;
 }

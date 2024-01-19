@@ -19,7 +19,7 @@
                            Posledních 10 záznamů
                         </h5>
                         <div class="card-body">
-                            <p>Žádné záznamy pro toto vozidlo nejsou k dispozici</p>
+                            <p th:if="${records.isEmpty()}">Žádné záznamy pro toto vozidlo nejsou k dispozici</p>
                             <div class="table-responsive" th:if="${!records.isEmpty()}">
                                 <table class="table">
                                     <thead>
