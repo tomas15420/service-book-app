@@ -1,5 +1,6 @@
 package cz.uhk.fim.servicebookapp.service;
 
+import cz.uhk.fim.servicebookapp.model.Car;
 import cz.uhk.fim.servicebookapp.model.ServiceRecord;
 import cz.uhk.fim.servicebookapp.model.User;
 import cz.uhk.fim.servicebookapp.repository.ServiceRecordRepository;
@@ -37,5 +38,8 @@ public class ServiceRecordService {
 
     public Integer getUserTotalCosts(User user){
         return serviceRecordRepository.getUserTotalCosts(user);
+    }
+    public Integer getCarTotalCosts(Car car){
+        return serviceRecordRepository.getCarTotalCosts(car);
     }
 }

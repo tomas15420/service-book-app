@@ -1,5 +1,6 @@
 package cz.uhk.fim.servicebookapp.repository;
 
+import cz.uhk.fim.servicebookapp.model.Car;
 import cz.uhk.fim.servicebookapp.model.ServiceRecord;
 import cz.uhk.fim.servicebookapp.model.User;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,6 @@ public interface ServiceRecordRepository extends JpaRepository<ServiceRecord, Lo
     Page<ServiceRecord> findAll(Specification<ServiceRecord> specification, Pageable pageable);
     @Query("SELECT SUM(sr.cost) FROM ServiceRecord sr WHERE sr.car.user=:user")
     Integer getUserTotalCosts(User user);
+    @Query("SELECT SUM(sr.cost) FROM ServiceRecord  sr WHERE  sr.car=:car")
+    Integer getCarTotalCosts(Car car);
 }
