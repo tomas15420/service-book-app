@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns="http://www.w3.org/1999/html">
+<head th:replace="layout :: head">
+    <title id="pageTitle">Servisní záznam</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0 mainContainer">
+    <!-- Navigation-->
+    <nav th:replace="layout :: nav">
+
+    </nav>
+    <!-- Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h5 class="card-title flex-fill text-break" th:text="${record.operation.name}"></h5>
+                        <a th:href="@{/service-records/{serviceId}/edit(serviceId=${record.id})}" class="btn btn-primary me-1"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a th:href="@{/service-records/{serviceId}/delete(serviceId=${record.id})}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Datum</th>
+                                    <td th:text="${#temporals.format(record.date,'dd.MM.yyyy')}"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Vozidlo</th>
+                                    <td>
+                                        <a th:text="${record.car.brand.name + ' ' + record.car.model + (!record.car.nickname.isEmpty() ? ' (' + record.car.nickname + ')' : '')}"
+                                           th:href="@{/cars/{carId}(carId=${record.car.id})}"
+                                           class="text-break">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Cena úkonu</th>
+                                    <td th:text="${record.cost + ' Kč'}" class="text-danger fw-bold"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Stav tachometru</th>
+                                    <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${!record.description.isEmpty()}">
+                            <h5>Popis:</h5>
+                            <p th:text="${record.description}" class="text-break"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3" th:if="${sameTypeRecords.getNumberOfElements() > 0}">
+                <h5 class="card-header" th:text="${'Další záznamy s ' + record.operation.name }"></h5>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Datum</th>
+                                <th scope="col">Vozidlo</th>
+                                <th scope="col">Cena</th>
+                                <th scope="col">Stav tachometru</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="stRecord: ${sameTypeRecords}">
+                                <td th:text="${#temporals.format(record.date,'dd.MM.yyyy')}"></td>
+                                <td>
+                                    <a th:text="${stRecord.car.brand.name + ' ' + stRecord.car.model + (!stRecord.car.nickname.isEmpty() ? ' (' + stRecord.car.nickname + ')' : '')}"
+                                       th:href="@{/cars/{carId}(carId=${stRecord.car.id})}">
+                                    </a>
+                                </td>
+                                <td th:text="${stRecord.cost + ' Kč'}"></td>
+                                <td th:text="${stRecord.mileage == null ? '-' : stRecord.mileage + ' km'}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${sameTypeRecords.getTotalElements() > 10}" class="d-flex justify-content-end">
+                            <a th:href="@{/service-records(operationId=${record.operation.id})}" class="btn btn-primary">Zobrazit další výslekdy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout :: footer">
+
+</footer>
+</body>
+</html>

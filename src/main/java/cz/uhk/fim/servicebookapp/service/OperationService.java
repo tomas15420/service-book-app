@@ -26,7 +26,7 @@ public class OperationService {
         return operationRepository.findById(id);
     }
 
-    public Optional<Operation> getOperationByName(String name){
-        return operationRepository.getOperationsByName(name);
+    public Optional<Operation> getUserOperationByName(User user, String name){
+        return operationRepository.getOperationsByUserAndName(user, name);
     }
 }
