@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns="http://www.w3.org/1999/html">
+<head th:replace="layout :: head">
+    <title id="pageTitle">Seznam vozidel</title>
+</head>
+<body class="d-flex flex-column h-100">
+<main class="flex-shrink-0 mainContainer">
+    <!-- Navigation-->
+    <nav th:replace="layout :: nav">
+
+    </nav>
+    <!-- Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <h5 class="card-header">
+                           Posledních 10 záznamů
+                        </h5>
+                        <div class="card-body">
+                            <p>Žádné záznamy pro toto vozidlo nejsou k dispozici</p>
+                            <div class="table-responsive" th:if="${!records.isEmpty()}">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Datum</th>
+                                            <th scope="col">Úkon</th>
+                                            <th scope="col">Cena</th>
+                                            <th scope="col">Stav tachometru</th>
+                                            <th scope="col">Akce</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="record: ${records}">
+                                            <td th:text="${#temporals.format(record.date,'dd.MM.yyyy')}"></td>
+                                            <td>
+                                                <a th:text="${record.operation.name}" th:href="@{/service-records/{serviceId}(serviceId=${record.id})}"></a>
+                                            </td>
+                                            <td th:text="${record.cost + ' Kč'}"></td>
+                                            <td th:text="${record.mileage == null ? '-' : record.mileage + ' km'}"></td>
+                                            <td>
+                                                <a th:href="@{/service-records/{serviceId}/edit(serviceId=${record.id})}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                <a th:href="@{/service-records/{serviceId}/delete(serviceId=${record.id})}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a th:href="@{/service-records(carId=${car.id})}" th:if="${records.getTotalElements() > 10}" class="btn btn-primary float-end mt-2">Zobrazit další záznamy</a>
+                            <a th:href="@{/cars/{carId}/service-records/add(carId=${car.id})}" class="btn btn-primary float-start mt-2">Přidat záznam</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="w-100" th:style="'min-height: 80px; background-image: url('+ @{/images/car-brands/} + ${car.brand.image} +'); background-size: contain; background-repeat: no-repeat; background-position:center'"></div>
+
+
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="row">Tovární značka</th>
+                                        <td th:text="${car.brand.name}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Model</th>
+                                        <td th:text="${car.model}"></td>
+                                    </tr>
+                                    <tr th:if="${!#strings.isEmpty(car.nickname)}">
+                                        <th scope="row">Přezdívka</th>
+                                        <td th:text="${car.nickname}"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Celková útrata</th>
+                                        <td th:text="${((totalCosts != null) ? totalCosts  : 0) + ' Kč'}" class="text-danger"></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="layout :: footer">
+
+</footer>
+</body>
+</html>

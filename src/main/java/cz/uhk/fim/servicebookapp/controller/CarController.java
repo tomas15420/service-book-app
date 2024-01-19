@@ -1,15 +1,22 @@
 package cz.uhk.fim.servicebookapp.controller;
 
+import cz.uhk.fim.servicebookapp.enumeration.ServiceRecordSortField;
 import cz.uhk.fim.servicebookapp.exception.BadRequestException;
 import cz.uhk.fim.servicebookapp.exception.ForbiddenException;
 import cz.uhk.fim.servicebookapp.exception.UnauthorizedException;
 import cz.uhk.fim.servicebookapp.model.Car;
+import cz.uhk.fim.servicebookapp.model.ServiceRecord;
 import cz.uhk.fim.servicebookapp.model.User;
 import cz.uhk.fim.servicebookapp.service.CarBrandService;
 import cz.uhk.fim.servicebookapp.service.CarService;
+import cz.uhk.fim.servicebookapp.service.ServiceRecordService;
 import cz.uhk.fim.servicebookapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +33,7 @@ public class CarController {
     private final CarBrandService carBrandService;
     private final CarService carService;
     private final UserService userService;
+    private final ServiceRecordService serviceRecordService;
 
     @GetMapping("/cars/add-car")
     public String addCarForm(Model model){
@@ -81,10 +89,19 @@ public class CarController {
         return "redirect:/cars?success=delete";
     }
 
-    @GetMapping("/cars")
-    public String carsList(Model model, Principal principal){
+    @GetMapping("/cars/{carId}")
+    public String carsList(@PathVariable Long carId, Model model, Principal principal){
         User loggedUser = userService.getUserByUsername(principal.getName()).orElseThrow(() -> new UnauthorizedException("Nejste přihlášen"));
-        model.addAttribute("cars", carService.getUserCars(loggedUser));
-        return "car/car-list";
+        Car car = carService.getCarById(carId).orElseThrow(() -> new BadRequestException("Vozidlo s tímto ID neexistuje"));
+        if(!car.getUser().equals(loggedUser)) throw new ForbiddenException("Neoprávněný přístup");
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ServiceRecordSortField.DATE.getDatabaseFieldName());
+        Pageable pageable = PageRequest.of(0,10,sort);
+
+        Page<ServiceRecord> records = serviceRecordService.findAllByUser(loggedUser,car.getId(),null,null,null,pageable);
+        model.addAttribute("car", car);
+        model.addAttribute("records", records);
+        model.addAttribute("totalCosts", serviceRecordService.getCarTotalCosts(car));
+        return "car/car";
     }
 }
